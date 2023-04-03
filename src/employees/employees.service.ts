@@ -17,6 +17,22 @@ export class EmployeesService {
     return this.prisma.employee.findMany({ where: { isDeleted: false } });
   }
 
+  search(keyword: string) {
+    return this.prisma.employee.findMany({
+      where: {
+        OR: [
+          { firstName: { contains: keyword, mode: 'insensitive' } },
+          { middleName: { contains: keyword, mode: 'insensitive' } },
+          { lastName: { contains: keyword, mode: 'insensitive' } },
+          { email: { contains: keyword, mode: 'insensitive' } },
+          { department: { contains: keyword, mode: 'insensitive' } },
+          { phone: { contains: keyword, mode: 'insensitive' } },
+          { position: { contains: keyword, mode: 'insensitive' } },
+        ],
+      },
+    });
+  }
+
   findOne(id: number) {
     // return `This action returns a #${id} employee`;
     const employee = this.prisma.employee.findUnique({ where: { id } });
@@ -29,10 +45,18 @@ export class EmployeesService {
   }
 
   update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
+    // return `This action updates a #${id} employee`;
+    return this.prisma.employee.update({
+      where: { id },
+      data: updateEmployeeDto,
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} employee`;
+    // return `This action removes a #${id} employee`;
+    return this.prisma.employee.update({
+      where: { id },
+      data: { isDeleted: true },
+    });
   }
 }
