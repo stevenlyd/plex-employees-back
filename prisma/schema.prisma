@@ -24,5 +24,5 @@ model Employee {
   directReports   Int[]
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  isdeleted       Boolean  @default(false)
+  isDeleted       Boolean  @default(false)
 }
