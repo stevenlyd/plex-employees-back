@@ -15,7 +15,7 @@ async function main() {
       position: 'developer',
       department: 'R&D',
       directReports: [],
-      directSuperiors: [],
+      directSupervisors: [],
     },
   });
 
@@ -31,7 +31,7 @@ async function main() {
       position: 'director',
       department: 'R&D',
       directReports: [],
-      directSuperiors: [],
+      directSupervisors: [],
     },
   });
 

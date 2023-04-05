@@ -23,7 +23,7 @@ export class EmployeesController {
 
   @Get()
   findAll(@Query('keyword') keyword: string) {
-    if (keyword) {
+    if (keyword && keyword.length > 0) {
       return this.employeesService.search(keyword);
     } else {
       return this.employeesService.findAll();
