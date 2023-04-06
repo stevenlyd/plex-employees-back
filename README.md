@@ -66,5 +66,5 @@ The backend API will run on `http://localhost:3001`.
 -   `GET /employees`: Retrieve a list of employees with cursor-based pagination and optional search functionality
 -   `GET /employees/:id`: Retrieve a specific employee by ID
 -   `POST /employees`: Create a new employee
--   `PUT /employees/:id`: Update an existing employee by ID
+-   `PATCH /employees/:id`: Update an existing employee by ID
 -   `DELETE /employees/:id`: Delete an employee by ID
