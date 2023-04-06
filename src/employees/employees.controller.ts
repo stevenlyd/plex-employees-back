@@ -1,25 +1,29 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from "@nestjs/common";
-import { EmployeesService } from "./employees.service";
-import { CreateEmployeeDto } from "./dto/create-employee.dto";
-import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { config } from "src/util/config";
 import { EmployeeResponse } from "src/util/interfaces";
+
+import { CreateEmployeeDto } from "./dto/create-employee.dto";
+import { UpdateEmployeeDto } from "./dto/update-employee.dto";
+import { EmployeesService } from "./employees.service";
 
 @Controller("employees")
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
   @Post()
-  create(@Body() createEmployeeDto: CreateEmployeeDto) {
+  create(
+    @Body()
+    createEmployeeDto: CreateEmployeeDto
+  ) {
     return this.employeesService.create(createEmployeeDto);
   }
 
