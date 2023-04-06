@@ -2,6 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { config } from 'src/util/config';
+import { Employee } from '@prisma/client';
+import { EmployeeResponse } from 'src/util/interfaces';
 
 @Injectable()
 export class EmployeesService {
@@ -12,25 +15,178 @@ export class EmployeesService {
     return this.prisma.employee.create({ data: createEmployeeDto });
   }
 
-  findAll() {
-    // return `This action returns all employees`;
-    return this.prisma.employee.findMany({ where: { isDeleted: false } });
+  async findAll(
+    cursor?: string,
+    limit = config.DEFAULT_LIMIT,
+  ): Promise<EmployeeResponse> {
+    const parsedCursor = cursor ? parseInt(cursor) : undefined;
+
+    const employees = await this.prisma.employee.findMany({
+      where: { isDeleted: false },
+      take: parseInt(limit),
+      cursor: cursor ? { id: parseInt(cursor) } : undefined,
+      orderBy: { id: 'asc' },
+    });
+
+    let prevCursor = null;
+    let nextCursor = null;
+
+    if (parsedCursor && employees.length > 0) {
+      const previousRecord = await this.prisma.employee.findFirst({
+        where: { id: { lt: employees[0].id }, isDeleted: false },
+        orderBy: { id: 'desc' },
+      });
+
+      const nextRecord = await this.prisma.employee.findFirst({
+        where: {
+          id: { gt: employees[employees.length - 1].id },
+          isDeleted: false,
+        },
+        orderBy: { id: 'asc' },
+      });
+
+      nextCursor = nextRecord ? nextRecord.id : null;
+      prevCursor = previousRecord ? previousRecord.id : null;
+    } else {
+      const nextRecord = await this.prisma.employee.findFirst({
+        where: {
+          id: { gt: employees[employees.length - 1].id },
+          isDeleted: false,
+        },
+        orderBy: { id: 'asc' },
+      });
+
+      nextCursor = nextRecord ? nextRecord.id : null;
+      prevCursor = null;
+    }
+
+    return {
+      data: employees,
+      nextCursor,
+      prevCursor,
+    };
   }
 
-  search(keyword: string) {
-    return this.prisma.employee.findMany({
+  async search(
+    keyword: string,
+    cursor?: string,
+    limit = config.DEFAULT_LIMIT,
+  ): Promise<EmployeeResponse> {
+    const parsedCursor = cursor ? parseInt(cursor) : undefined;
+    const take = parseInt(limit);
+
+    const employees = await this.prisma.employee.findMany({
       where: {
-        OR: [
-          { firstName: { contains: keyword, mode: 'insensitive' } },
-          { middleName: { contains: keyword, mode: 'insensitive' } },
-          { lastName: { contains: keyword, mode: 'insensitive' } },
-          { email: { contains: keyword, mode: 'insensitive' } },
-          { department: { contains: keyword, mode: 'insensitive' } },
-          { phone: { contains: keyword, mode: 'insensitive' } },
-          { position: { contains: keyword, mode: 'insensitive' } },
+        AND: [
+          { isDeleted: false },
+          {
+            OR: [
+              { firstName: { contains: keyword, mode: 'insensitive' } },
+              { lastName: { contains: keyword, mode: 'insensitive' } },
+              { email: { contains: keyword, mode: 'insensitive' } },
+              { department: { contains: keyword, mode: 'insensitive' } },
+              { phone: { contains: keyword, mode: 'insensitive' } },
+              { position: { contains: keyword, mode: 'insensitive' } },
+            ],
+          },
         ],
       },
+      take,
+      cursor: parsedCursor ? { id: parsedCursor } : undefined,
+      orderBy: { id: 'asc' },
     });
+
+    let prevCursor = null;
+    let nextCursor = null;
+
+    if (parsedCursor && employees.length > 0) {
+      const previousRecord = await this.prisma.employee.findFirst({
+        where: {
+          AND: [
+            {
+              id: {
+                lt: employees[0].id,
+              },
+            },
+            { isDeleted: false },
+            {
+              OR: [
+                { firstName: { contains: keyword, mode: 'insensitive' } },
+                { lastName: { contains: keyword, mode: 'insensitive' } },
+                { email: { contains: keyword, mode: 'insensitive' } },
+                { department: { contains: keyword, mode: 'insensitive' } },
+                { phone: { contains: keyword, mode: 'insensitive' } },
+                { position: { contains: keyword, mode: 'insensitive' } },
+              ],
+            },
+          ],
+        },
+        orderBy: { id: 'desc' },
+      });
+
+      const nextRecord = await this.prisma.employee.findFirst({
+        where: {
+          AND: [
+            {
+              id: {
+                gt: employees[employees.length - 1].id,
+              },
+            },
+            { isDeleted: false },
+            {
+              OR: [
+                { firstName: { contains: keyword, mode: 'insensitive' } },
+                { lastName: { contains: keyword, mode: 'insensitive' } },
+                { email: { contains: keyword, mode: 'insensitive' } },
+                { department: { contains: keyword, mode: 'insensitive' } },
+                { phone: { contains: keyword, mode: 'insensitive' } },
+                { position: { contains: keyword, mode: 'insensitive' } },
+              ],
+            },
+          ],
+        },
+        orderBy: { id: 'asc' },
+      });
+
+      nextCursor = nextRecord ? nextRecord.id : null;
+      prevCursor = previousRecord ? previousRecord.id : null;
+    } else if (employees.length > 0) {
+      const nextRecord = await this.prisma.employee.findFirst({
+        where: {
+          AND: [
+            {
+              id: {
+                gt: employees[employees.length - 1].id,
+              },
+            },
+            { isDeleted: false },
+            {
+              OR: [
+                { firstName: { contains: keyword, mode: 'insensitive' } },
+                { lastName: { contains: keyword, mode: 'insensitive' } },
+                { email: { contains: keyword, mode: 'insensitive' } },
+                { department: { contains: keyword, mode: 'insensitive' } },
+                { phone: { contains: keyword, mode: 'insensitive' } },
+                { position: { contains: keyword, mode: 'insensitive' } },
+              ],
+            },
+          ],
+        },
+        orderBy: { id: 'asc' },
+      });
+
+      nextCursor = nextRecord ? nextRecord.id : null;
+      prevCursor = null;
+    } else {
+      nextCursor = null;
+      prevCursor = null;
+    }
+
+    return {
+      data: employees,
+      nextCursor,
+      prevCursor,
+    };
   }
 
   findOne(id: number) {
