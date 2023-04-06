@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { config } from 'src/util/config';
-import { Employee } from '@prisma/client';
-import { EmployeeResponse } from 'src/util/interfaces';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { Employee } from "@prisma/client";
+import { PrismaService } from "src/prisma/prisma.service";
+import { config } from "src/util/config";
+import { EmployeeResponse } from "src/util/interfaces";
+
+import { CreateEmployeeDto } from "./dto/create-employee.dto";
+import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 
 @Injectable()
 export class EmployeesService {
@@ -17,7 +18,7 @@ export class EmployeesService {
 
   async findAll(
     cursor?: string,
-    limit = config.DEFAULT_LIMIT,
+    limit = config.DEFAULT_LIMIT
   ): Promise<EmployeeResponse> {
     const parsedCursor = cursor ? parseInt(cursor) : undefined;
 
@@ -25,7 +26,7 @@ export class EmployeesService {
       where: { isDeleted: false },
       take: parseInt(limit),
       cursor: cursor ? { id: parseInt(cursor) } : undefined,
-      orderBy: { id: 'asc' },
+      orderBy: { id: "asc" },
     });
 
     let prevCursor = null;
@@ -34,7 +35,7 @@ export class EmployeesService {
     if (parsedCursor && employees.length > 0) {
       const previousRecord = await this.prisma.employee.findFirst({
         where: { id: { lt: employees[0].id }, isDeleted: false },
-        orderBy: { id: 'desc' },
+        orderBy: { id: "desc" },
       });
 
       const nextRecord = await this.prisma.employee.findFirst({
@@ -42,7 +43,7 @@ export class EmployeesService {
           id: { gt: employees[employees.length - 1].id },
           isDeleted: false,
         },
-        orderBy: { id: 'asc' },
+        orderBy: { id: "asc" },
       });
 
       nextCursor = nextRecord ? nextRecord.id : null;
@@ -53,7 +54,7 @@ export class EmployeesService {
           id: { gt: employees[employees.length - 1].id },
           isDeleted: false,
         },
-        orderBy: { id: 'asc' },
+        orderBy: { id: "asc" },
       });
 
       nextCursor = nextRecord ? nextRecord.id : null;
@@ -70,7 +71,7 @@ export class EmployeesService {
   async search(
     keyword: string,
     cursor?: string,
-    limit = config.DEFAULT_LIMIT,
+    limit = config.DEFAULT_LIMIT
   ): Promise<EmployeeResponse> {
     const parsedCursor = cursor ? parseInt(cursor) : undefined;
     const take = parseInt(limit);
@@ -81,19 +82,19 @@ export class EmployeesService {
           { isDeleted: false },
           {
             OR: [
-              { firstName: { contains: keyword, mode: 'insensitive' } },
-              { lastName: { contains: keyword, mode: 'insensitive' } },
-              { email: { contains: keyword, mode: 'insensitive' } },
-              { department: { contains: keyword, mode: 'insensitive' } },
-              { phone: { contains: keyword, mode: 'insensitive' } },
-              { position: { contains: keyword, mode: 'insensitive' } },
+              { firstName: { contains: keyword, mode: "insensitive" } },
+              { lastName: { contains: keyword, mode: "insensitive" } },
+              { email: { contains: keyword, mode: "insensitive" } },
+              { department: { contains: keyword, mode: "insensitive" } },
+              { phone: { contains: keyword, mode: "insensitive" } },
+              { position: { contains: keyword, mode: "insensitive" } },
             ],
           },
         ],
       },
       take,
       cursor: parsedCursor ? { id: parsedCursor } : undefined,
-      orderBy: { id: 'asc' },
+      orderBy: { id: "asc" },
     });
 
     let prevCursor = null;
@@ -111,17 +112,17 @@ export class EmployeesService {
             { isDeleted: false },
             {
               OR: [
-                { firstName: { contains: keyword, mode: 'insensitive' } },
-                { lastName: { contains: keyword, mode: 'insensitive' } },
-                { email: { contains: keyword, mode: 'insensitive' } },
-                { department: { contains: keyword, mode: 'insensitive' } },
-                { phone: { contains: keyword, mode: 'insensitive' } },
-                { position: { contains: keyword, mode: 'insensitive' } },
+                { firstName: { contains: keyword, mode: "insensitive" } },
+                { lastName: { contains: keyword, mode: "insensitive" } },
+                { email: { contains: keyword, mode: "insensitive" } },
+                { department: { contains: keyword, mode: "insensitive" } },
+                { phone: { contains: keyword, mode: "insensitive" } },
+                { position: { contains: keyword, mode: "insensitive" } },
               ],
             },
           ],
         },
-        orderBy: { id: 'desc' },
+        orderBy: { id: "desc" },
       });
 
       const nextRecord = await this.prisma.employee.findFirst({
@@ -135,17 +136,17 @@ export class EmployeesService {
             { isDeleted: false },
             {
               OR: [
-                { firstName: { contains: keyword, mode: 'insensitive' } },
-                { lastName: { contains: keyword, mode: 'insensitive' } },
-                { email: { contains: keyword, mode: 'insensitive' } },
-                { department: { contains: keyword, mode: 'insensitive' } },
-                { phone: { contains: keyword, mode: 'insensitive' } },
-                { position: { contains: keyword, mode: 'insensitive' } },
+                { firstName: { contains: keyword, mode: "insensitive" } },
+                { lastName: { contains: keyword, mode: "insensitive" } },
+                { email: { contains: keyword, mode: "insensitive" } },
+                { department: { contains: keyword, mode: "insensitive" } },
+                { phone: { contains: keyword, mode: "insensitive" } },
+                { position: { contains: keyword, mode: "insensitive" } },
               ],
             },
           ],
         },
-        orderBy: { id: 'asc' },
+        orderBy: { id: "asc" },
       });
 
       nextCursor = nextRecord ? nextRecord.id : null;
@@ -162,17 +163,17 @@ export class EmployeesService {
             { isDeleted: false },
             {
               OR: [
-                { firstName: { contains: keyword, mode: 'insensitive' } },
-                { lastName: { contains: keyword, mode: 'insensitive' } },
-                { email: { contains: keyword, mode: 'insensitive' } },
-                { department: { contains: keyword, mode: 'insensitive' } },
-                { phone: { contains: keyword, mode: 'insensitive' } },
-                { position: { contains: keyword, mode: 'insensitive' } },
+                { firstName: { contains: keyword, mode: "insensitive" } },
+                { lastName: { contains: keyword, mode: "insensitive" } },
+                { email: { contains: keyword, mode: "insensitive" } },
+                { department: { contains: keyword, mode: "insensitive" } },
+                { phone: { contains: keyword, mode: "insensitive" } },
+                { position: { contains: keyword, mode: "insensitive" } },
               ],
             },
           ],
         },
-        orderBy: { id: 'asc' },
+        orderBy: { id: "asc" },
       });
 
       nextCursor = nextRecord ? nextRecord.id : null;

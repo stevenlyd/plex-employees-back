@@ -7,14 +7,14 @@ import {
   Param,
   Delete,
   Query,
-} from '@nestjs/common';
-import { EmployeesService } from './employees.service';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { config } from 'src/util/config';
-import { EmployeeResponse } from 'src/util/interfaces';
+} from "@nestjs/common";
+import { EmployeesService } from "./employees.service";
+import { CreateEmployeeDto } from "./dto/create-employee.dto";
+import { UpdateEmployeeDto } from "./dto/update-employee.dto";
+import { config } from "src/util/config";
+import { EmployeeResponse } from "src/util/interfaces";
 
-@Controller('employees')
+@Controller("employees")
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
@@ -25,12 +25,12 @@ export class EmployeesController {
 
   @Get()
   async findAll(
-    @Query('keyword')
+    @Query("keyword")
     keyword: string,
-    @Query('cursor')
+    @Query("cursor")
     cursor?: string,
-    @Query('limit')
-    limit: string = config.DEFAULT_LIMIT,
+    @Query("limit")
+    limit: string = config.DEFAULT_LIMIT
   ): Promise<EmployeeResponse> {
     if (keyword && keyword.length > 0) {
       return await this.employeesService.search(keyword, cursor, limit);
@@ -39,21 +39,21 @@ export class EmployeesController {
     }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.employeesService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   update(
-    @Param('id') id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto,
+    @Param("id") id: string,
+    @Body() updateEmployeeDto: UpdateEmployeeDto
   ) {
     return this.employeesService.update(+id, updateEmployeeDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.employeesService.remove(+id);
   }
 }

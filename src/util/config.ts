@@ -1,3 +1,3 @@
 export const config = {
-  DEFAULT_LIMIT: '5',
+  DEFAULT_LIMIT: "5",
 };
