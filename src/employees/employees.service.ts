@@ -12,7 +12,6 @@ export class EmployeesService {
   constructor(private prisma: PrismaService) {}
 
   create(createEmployeeDto: CreateEmployeeDto) {
-    // return 'This action adds a new employee';
     return this.prisma.employee.create({ data: createEmployeeDto });
   }
 
@@ -191,7 +190,6 @@ export class EmployeesService {
   }
 
   findOne(id: number) {
-    // return `This action returns a #${id} employee`;
     const employee = this.prisma.employee.findUnique({ where: { id } });
 
     if (!employee) {
@@ -202,7 +200,6 @@ export class EmployeesService {
   }
 
   update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    // return `This action updates a #${id} employee`;
     return this.prisma.employee.update({
       where: { id },
       data: updateEmployeeDto,
@@ -210,7 +207,6 @@ export class EmployeesService {
   }
 
   remove(id: number) {
-    // return `This action removes a #${id} employee`;
     return this.prisma.employee.update({
       where: { id },
       data: { isDeleted: true },
