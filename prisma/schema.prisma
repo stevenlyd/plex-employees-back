@@ -11,14 +11,14 @@ datasource db {
 }
 
 model Employee {
-  id                Int      @id @default(autoincrement())
-  firstName         String
-  lastName          String
-  email             String
-  phone             String
-  position          String
-  department        String
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt 
-  isDeleted         Boolean  @default(false)
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  lastName   String
+  email      String
+  phone      String
+  position   String
+  department String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isDeleted  Boolean  @default(false)
 }

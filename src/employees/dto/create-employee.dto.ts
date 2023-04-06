@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, IsBoolean, IsOptional } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsBoolean, IsEmail, IsOptional, IsString } from "class-validator";
 
 export class CreateEmployeeDto {
   @ApiProperty()

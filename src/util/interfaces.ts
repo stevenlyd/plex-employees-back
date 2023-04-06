@@ -1,4 +1,4 @@
-import { Employee } from '@prisma/client';
+import { Employee } from "@prisma/client";
 
 export interface EmployeeResponse {
   data: Employee[];
