@@ -24,10 +24,8 @@ The Plexxis Employees Backend is a robust and efficient back-end service for the
 
 1.  Clone the repository to your local machine.
     
-    bashCopy code
-    
     ```
-    git clone <repository-url>
+    git clone https://github.com/stevenlyd/plex-employees-back.git
     ``` 
     
 2.  Install the required dependencies.
