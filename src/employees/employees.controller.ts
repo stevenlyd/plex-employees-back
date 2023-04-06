@@ -11,6 +11,8 @@ import {
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { config } from 'src/util/config';
+import { EmployeeResponse } from 'src/util/interfaces';
 
 @Controller('employees')
 export class EmployeesController {
@@ -22,11 +24,18 @@ export class EmployeesController {
   }
 
   @Get()
-  findAll(@Query('keyword') keyword: string) {
-    if (keyword) {
-      return this.employeesService.search(keyword);
+  async findAll(
+    @Query('keyword')
+    keyword: string,
+    @Query('cursor')
+    cursor?: string,
+    @Query('limit')
+    limit: string = config.DEFAULT_LIMIT,
+  ): Promise<EmployeeResponse> {
+    if (keyword && keyword.length > 0) {
+      return await this.employeesService.search(keyword, cursor, limit);
     } else {
-      return this.employeesService.findAll();
+      return await this.employeesService.findAll(cursor, limit);
     }
   }
 

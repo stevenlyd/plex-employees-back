@@ -11,11 +11,8 @@ async function main() {
       lastName: 'Doe',
       email: 'johndoe@plexxis.com',
       phone: '6476476647',
-      gender: 'male',
       position: 'developer',
       department: 'R&D',
-      directReports: [],
-      directSuperiors: [],
     },
   });
 
@@ -27,11 +24,8 @@ async function main() {
       lastName: 'Kent',
       email: 'marykent@plexxis.com',
       phone: '6476476648',
-      gender: 'female',
       position: 'director',
       department: 'R&D',
-      directReports: [],
-      directSuperiors: [],
     },
   });
 
