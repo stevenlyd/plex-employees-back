@@ -47,7 +47,7 @@ export class EmployeesService {
 
       nextCursor = nextRecord ? nextRecord.id : null;
       prevCursor = previousRecord ? previousRecord.id : null;
-    } else {
+    } else if (employees.length > 0) {
       const nextRecord = await this.prisma.employee.findFirst({
         where: {
           id: { gt: employees[employees.length - 1].id },
@@ -58,6 +58,9 @@ export class EmployeesService {
 
       nextCursor = nextRecord ? nextRecord.id : null;
       prevCursor = null;
+    } else {
+      prevCursor = null;
+      nextCursor = null;
     }
 
     return {
