@@ -44,20 +44,20 @@ export class EmployeesController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.employeesService.findOne(+id);
+  async findOne(@Param("id") id: string) {
+    return await this.employeesService.findOne(+id);
   }
 
   @Patch(":id")
-  update(
+  async update(
     @Param("id") id: string,
     @Body() updateEmployeeDto: UpdateEmployeeDto
   ) {
-    return this.employeesService.update(+id, updateEmployeeDto);
+    return await this.employeesService.update(+id, updateEmployeeDto);
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.employeesService.remove(+id);
+  async remove(@Param("id") id: string) {
+    return await this.employeesService.remove(+id);
   }
 }

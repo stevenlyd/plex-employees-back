@@ -192,25 +192,27 @@ export class EmployeesService {
     };
   }
 
-  findOne(id: number) {
-    const employee = this.prisma.employee.findUnique({ where: { id } });
+  async findOne(id: number): Promise<Employee> {
+    const employee = await this.prisma.employee.findUnique({
+      where: { id },
+    });
 
-    if (!employee) {
+    if (!employee || employee.isDeleted) {
       throw new NotFoundException(`Employee #${id} not found`);
     }
 
     return employee;
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return this.prisma.employee.update({
+  async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+    return await this.prisma.employee.update({
       where: { id },
       data: updateEmployeeDto,
     });
   }
 
-  remove(id: number) {
-    return this.prisma.employee.update({
+  async remove(id: number) {
+    return await this.prisma.employee.update({
       where: { id },
       data: { isDeleted: true },
     });
